@@ -12,6 +12,8 @@
 
 #pragma GCC system_header    // treat file as system include file
 
+#include "stdint.h"
+
 /* Fallback for __has_builtin */
 #ifndef __has_builtin
     #define __has_builtin(x) (0)
@@ -97,6 +99,9 @@
 #endif
 #ifndef __ALIAS
   #define __ALIAS(x)                             __attribute__ ((alias(x)))
+#endif
+#ifndef __STR
+    #define __STR(x)                            #x
 #endif
 
 /* ##########################  Core Instruction Access  ######################### */

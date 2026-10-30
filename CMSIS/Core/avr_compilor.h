@@ -10,6 +10,8 @@
  */
 #pragma once
 
+#include "stdint.h"
+
 #if defined(__GNUC__)
     #include "avr_gcc.h"
 #endif
