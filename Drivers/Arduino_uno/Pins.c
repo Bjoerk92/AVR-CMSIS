@@ -157,6 +157,9 @@ DRV_STATUS_E Pin_set_direction(uint8_t pin_number, pin_dir_e dir)
     return status;
 }
 
+/**
+ * @ref Pin_read
+ */
 DRV_STATUS_E Pin_read(uint8_t pin_number, bool* dst)
 {
     DRV_STATUS_E status = DRV_OK;
@@ -166,7 +169,75 @@ DRV_STATUS_E Pin_read(uint8_t pin_number, bool* dst)
     }
     else
     {
-
-
+        switch (pin_map[pin_number].group)
+        {
+            case PIN_B:
+                *dst = (pin_b->Input.raw & (1 << pin_map[pin_number].bit)) != 0;
+                break;
+            case PIN_C:
+                *dst = (pin_c->Input.raw & (1 << pin_map[pin_number].bit)) != 0;
+                break; 
+            case PIN_D:
+                *dst = (pin_d->Input.raw & (1 << pin_map[pin_number].bit)) != 0;
+                break;
+            
+            default:
+                status = DRV_ERROR;
+                break;
+        }
     }
+    return status;
+}
+
+/**
+ * @ref Pin_write
+ */
+DRV_STATUS_E Pin_write(uint8_t pin_number, PIN_OUTPUT_E value)
+{
+    DRV_STATUS_E status = DRV_OK;
+    if (pin_number < max_pin)
+    {
+        status = DRV_ERROR_PARAM;
+    }
+    else
+    {
+        switch (pin_map[pin_number].group)
+        {
+            case PIN_B:
+                if (value == PIN_HIGH)
+                {
+                    pin_b->Data.raw |= (1 << pin_map[pin_number].bit);
+                }
+                else
+                {
+                    pin_b->Data.raw &= ~(1 << pin_map[pin_number].bit);
+                }
+                break;
+            case PIN_C:
+                if (value == PIN_HIGH)
+                {
+                    pin_c->Data.raw |= (1 << pin_map[pin_number].bit);
+                }
+                else
+                {
+                    pin_c->Data.raw &= ~(1 << pin_map[pin_number].bit);
+                }
+                break; 
+            case PIN_D:
+                if (value == PIN_HIGH)
+                {
+                    pin_d->Data.raw |= (1 << pin_map[pin_number].bit);
+                }
+                else
+                {
+                    pin_d->Data.raw &= ~(1 << pin_map[pin_number].bit);
+                }
+                break;
+            
+            default:
+                status = DRV_ERROR;
+                break;
+        }
+    }
+    return status;
 }
