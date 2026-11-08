@@ -405,6 +405,46 @@ typedef enum
 #define TIMER1_BASE_ADDRESS (0x80U) // base address for Timer 1
 #define TIMER2_BASE_ADDRESS (0xB0U) // base address for Timer 2
 
+/**
+ * @brief Define the 8-bit timer interrupt register
+ * 
+ */
+typedef union TISMK_8Bit_Ttag
+{
+    struct {
+        uint8_t TOIE : 1;
+        uint8_t OCIEA : 1;
+        uint8_t OCIEB : 1;
+        uint8_t reserved : 5;
+    }b;
+    uint8_t raw;
+}TISMK_8Bit_t;
+
+/**
+ * @brief Define the 16-bit timer interrupt register
+ * 
+ */
+typedef union TISMK_16Bit_Ttag
+{
+    struct {
+        uint8_t TOIE : 1;
+        uint8_t OCIEA : 1;
+        uint8_t OCIEB : 1;
+        uint8_t reserved : 2;
+        uint8_t ICIE : 1;
+        uint8_t reserved2: 2;
+    }b;
+    uint8_t raw;
+}TISMK_16Bit_t;
+
+typedef TISMK_8Bit_t    Timer_irq_0_t;      // typedef for timer interrupt register 0
+typedef TISMK_16Bit_t   Timer_irq_1_t;      // typedef for timer interrupt register 1
+typedef TISMK_8Bit_t    Timer_irq_2_t;      // typedef for timer interrupt register 2
+
+#define TIMSK_0_BASE_ADDRESS (0x6EU)        // Timer/counter 0 interrupt register base address
+#define TIMSK_1_BASE_ADDRESS (0x6FU)        // Timer/counter 1 interrupt register base address
+#define TIMSK_2_BASE_ADDRESS (0x70U)        // Timer/counter 2 interrupt register base address
+
 /*****************************************************************************/
 /* SPI registers                                                             */
 /*****************************************************************************/
