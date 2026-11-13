@@ -128,9 +128,9 @@ __STATIC_INLINE void SetDirD(uint8_t pin, pin_dir_e dir)
 /**
  * @ref Pin_set_direction
  */
-DRV_STATUS_E Pin_set_direction(uint8_t pin_number, pin_dir_e dir)
+drv_status_e Pin_set_direction(uint8_t pin_number, pin_dir_e dir)
 {
-    DRV_STATUS_E status = DRV_OK;
+    drv_status_e status = DRV_OK;
     if (pin_number < max_pin)
     {
         status = DRV_ERROR_PARAM;
@@ -160,9 +160,9 @@ DRV_STATUS_E Pin_set_direction(uint8_t pin_number, pin_dir_e dir)
 /**
  * @ref Pin_read
  */
-DRV_STATUS_E Pin_read(uint8_t pin_number, bool* dst)
+drv_status_e Pin_read(uint8_t pin_number, bool* dst)
 {
-    DRV_STATUS_E status = DRV_OK;
+    drv_status_e status = DRV_OK;
     if (pin_number < max_pin)
     {
         status = DRV_ERROR_PARAM;
@@ -192,9 +192,9 @@ DRV_STATUS_E Pin_read(uint8_t pin_number, bool* dst)
 /**
  * @ref Pin_write
  */
-DRV_STATUS_E Pin_write(uint8_t pin_number, PIN_OUTPUT_E value)
+drv_status_e Pin_write(uint8_t pin_number, PIN_OUTPUT_E value)
 {
-    DRV_STATUS_E status = DRV_OK;
+    drv_status_e status = DRV_OK;
     if (pin_number < max_pin)
     {
         status = DRV_ERROR_PARAM;
