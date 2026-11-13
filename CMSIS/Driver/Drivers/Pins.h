@@ -46,24 +46,24 @@ typedef enum PIN_OUTPUT_Etag
  * 
  * @param pin_number Pin number to set direction
  * @param dir Direction to set
- * @return DRV_STATUS_E 
+ * @return drv_status_e 
  */
-DRV_STATUS_E Pin_set_direction(uint8_t pin_number, pin_dir_e dir);
+drv_status_e Pin_set_direction(uint8_t pin_number, pin_dir_e dir);
 
 /**
  * @brief Function to read a single pin value
  * 
  * @param pin_number    pin to read
  * @param dst           pointer to store the value
- * @return DRV_STATUS_E 
+ * @return drv_status_e 
  */
-DRV_STATUS_E Pin_read(uint8_t pin_number, bool* dst);
+drv_status_e Pin_read(uint8_t pin_number, bool* dst);
 
 /**
  * @brief Function to write a single pin value
  * 
  * @param pin_number    pin to write
  * @param value         value to write
- * @return DRV_STATUS_E 
+ * @return drv_status_e 
  */
-DRV_STATUS_E Pin_write(uint8_t pin_number, PIN_OUTPUT_E value);
+drv_status_e Pin_write(uint8_t pin_number, PIN_OUTPUT_E value);

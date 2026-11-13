@@ -23,9 +23,9 @@
     #include "Atmega2560.h"
 #endif
 
-typedef enum DRV_STATUS_Etag {
+typedef enum drv_status_etag {
     DRV_OK = 0,
     DRV_ERROR,
     DRV_ERROR_PARAM, 
-}DRV_STATUS_E;
+}drv_status_e;
 
