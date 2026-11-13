@@ -276,47 +276,29 @@ typedef struct
             uint8_t WGMn0 : 1;      // Waveform Generation Mode bit 0
             uint8_t WGMn1 : 1;      // Waveform Generation Mode bit 1
             uint8_t reserved : 2;   // Reserved - unused bits
-            uint8_t COMnB1 : 1;     // Compare Output Mode for Channel B bit 1
-            uint8_t COMnB0 : 1;     // Compare Output Mode for Channel B bit 0
-            uint8_t COMnA1 : 1;     // Compare Output Mode for Channel A bit 1
-            uint8_t COMnA0 : 1;     // Compare Output Mode for Channel A bit 0
+            uint8_t COMnB : 2;      // Compare Output mode for Channel B
+            uint8_t COMnA : 2;      // Compare Output Mode for Channel A
         }bin;
         uint8_t raw;
-    }tccrnA_t;                      // Timer/Counter Control Register A
+    }tccrA_t;                      // Timer/Counter Control Register A
 
     union 
     {
         struct
         {
-            uint8_t CSn0 : 1;       // Clock Select bit 0
-            uint8_t CSn1 : 1;       // Clock Select bit 1
-            uint8_t CSn2 : 1;       // Clock Select bit 2
+            uint8_t Clk_scale : 3;  // Clock prescaler selection
             uint8_t WGMn2 : 1;      // Waveform Generation Mode bit 2
             uint8_t reserved : 2;   // Reserved - unused bits
             uint8_t FOCnA : 1;      // Force Output Compare for Channel A
             uint8_t FOCnB : 1;      // Force Output Compare for Channel B
         }bin;
         uint8_t raw;
-    }tccrnB_t;                      // Timer/Counter Control Register B
+    }tccrB_t;                      // Timer/Counter Control Register B
 
     uint8_t TCNTn;                 // Timer/Counter Register
     uint8_t OCRnA;                 // Output Compare Register A
     uint8_t OCRnB;                 // Output Compare Register B
 }Timer_8bit_t;
-
-/**
- * @brief enum defining the different waveform generation modes for 8-bit timers
- * 
- */
-typedef enum Timer_8bit_WGM_Etag
-{
-    TIMER_8BIT_WGM_NORMAL = 0,
-    TIMER_8BIT_WGM_PWM_PHASE_CORRECT = 1,
-    TIMER_8BIT_WGM_CTC = 2,
-    TIMER_8BIT_WGM_FAST_PWM = 3,
-    TIMER_8BIT_WGM_PWM_PHASE_CORRECT_OCR = 5,
-    TIMER_8BIT_WGM_FAST_PWM_OCR = 7
-} Timer_8bit_WGM_e;
 
 /**
  * @brief Timer/Counter 1 registers
@@ -331,29 +313,36 @@ typedef struct
             uint8_t WGMn0 : 1;      // Waveform Generation Mode bit 0
             uint8_t WGMn1 : 1;      // Waveform Generation Mode bit 1
             uint8_t reserved : 2;   // Reserved - unused bits
-            uint8_t COMnB1 : 1;     // Compare Output Mode for Channel B bit 1
-            uint8_t COMnB0 : 1;     // Compare Output Mode for Channel B bit 0
-            uint8_t COMnA1 : 1;     // Compare Output Mode for Channel A bit 1
-            uint8_t COMnA0 : 1;     // Compare Output Mode for Channel A bit 0
+            uint8_t COMnB : 2;      // Compare Output mode for Channel B
+            uint8_t COMnA : 2;      // Compare Output Mode for Channel A
         }bin;
         uint8_t raw;
-    }tccrnA_t;                      // Timer/Counter Control Register A
+    }tccrA_t;                      // Timer/Counter Control Register A
 
     union 
     {
         struct
         {
-            uint8_t CSn0 : 1;       // Clock Select bit 0
-            uint8_t CSn1 : 1;       // Clock Select bit 1
-            uint8_t CSn2 : 1;       // Clock Select bit 2
+            uint8_t Clk_scale : 3;  // Clock prescaler selection
             uint8_t WGMn2 : 1;      // Waveform Generation Mode bit 2
             uint8_t WGMn3 : 1;      // Waveform Generation Mode bit 2
             uint8_t reserved : 1;   // Reserved - unused bits
+            uint8_t ICES1 : 1;      // Input Capture edge select
+            uint8_t ICNC1 : 1;      // Input Capture Noise Canceler
+        }bin;
+        uint8_t raw;
+    }tccrB_t;                      // Timer/Counter Control Register B
+
+    union
+    {
+        struct 
+        {
+            uint8_t reserved : 6;   // reserved
             uint8_t FOCnA : 1;      // Force Output Compare for Channel A
             uint8_t FOCnB : 1;      // Force Output Compare for Channel B
         }bin;
         uint8_t raw;
-    }tccrnB_t;                      // Timer/Counter Control Register B
+    }tccrC_t;
 
     uint8_t reserved;               // Reserved for alignment
     uint16_t TCNTn;                 // Timer/Counter Register
@@ -362,48 +351,85 @@ typedef struct
 }Timer_16bit_t;
 
 /**
- * @brief Enum defing the Wave generator for 16bit timer
+ * @brief Enum defining the Timer
  * 
  */
-typedef enum Timer_16bit_WGM_Etag
+typedef enum Timer_wgm_etag
 {
-    TIMER_16BIT_WGM_NORMAL = 0,
-    TIMER_16BIT_WGM_PWM_PHASE_CORRECT_8BIT = 1,
-    TIMER_16BIT_WGM_PWM_PHASE_CORRECT_9BIT = 2,
-    TIMER_16BIT_WGM_PWM_PHASE_CORRECT_10BIT = 3,
-    TIMER_16BIT_WGM_CTC_OCRnA = 4,
-    TIMER_16BIT_WGM_FAST_PWM_8BIT = 5,
-    TIMER_16BIT_WGM_FAST_PWM_9BIT = 6,
-    TIMER_16BIT_WGM_FAST_PWM_10BIT = 7,
-    TIMER_16BIT_WGM_PWM_PHASE_FREQ_CORRECT_ICRn = 8,
-    TIMER_16BIT_WGM_PWM_PHASE_FREQ_CORRECT_OCRnA = 9,
-    TIMER_16BIT_WGM_PWM_PHASE_CORRECT_ICRn = 10,
-    TIMER_16BIT_WGM_PWM_PHASE_CORRECT_OCRnA = 11,
-    TIMER_16BIT_WGM_CTC_ICRn = 12,
-    TIMER_16BIT_WGM_RESERVED1 = 13,
-    TIMER_16BIT_WGM_FAST_PWM_ICRn = 14,
-    TIMER_16BIT_WGM_FAST_PWM_OCRnA = 15
-} Timer_16bit_WGM_e;
+    // 8-bit timer waveform generation modes
+    TIMER_8BIT_WGM_NORMAL = 0,                      // Normal mode: counter counts from 0 to 0xFF then wraps
+    TIMER_8BIT_WGM_PWM_PHASE_CORRECT = 1,           // Phase-correct PWM: dual-slope output
+    TIMER_8BIT_WGM_CTC = 2,                         // Clear Timer on Compare Match (CTC)
+    TIMER_8BIT_WGM_FAST_PWM = 3,                    // Fast PWM: single-slope output
+    TIMER_8BIT_WGM_PWM_PHASE_CORRECT_OCR = 5,       // Phase-correct PWM using OCRn as TOP
+    TIMER_8BIT_WGM_FAST_PWM_OCR = 7,                // Fast PWM using OCRn as TOP
 
+    // 16-bit timer waveform generation modes
+    TIMER_16BIT_WGM_NORMAL = 0,                     // Normal mode: counter counts from 0 to 0xFFFF and wraps
+    TIMER_16BIT_WGM_PWM_PHASE_CORRECT_8BIT = 1,     // Phase-correct PWM, TOP = 0x00FF
+    TIMER_16BIT_WGM_PWM_PHASE_CORRECT_9BIT = 2,     // Phase-correct PWM, TOP = 0x01FF
+    TIMER_16BIT_WGM_PWM_PHASE_CORRECT_10BIT = 3,    // Phase-correct PWM, TOP = 0x03FF
+    TIMER_16BIT_WGM_CTC_OCRnA = 4,                   // CTC mode, TOP = OCR1A
+    TIMER_16BIT_WGM_FAST_PWM_8BIT = 5,               // Fast PWM, TOP = 0x00FF
+    TIMER_16BIT_WGM_FAST_PWM_9BIT = 6,               // Fast PWM, TOP = 0x01FF
+    TIMER_16BIT_WGM_FAST_PWM_10BIT = 7,              // Fast PWM, TOP = 0x03FF
+    TIMER_16BIT_WGM_PWM_PHASE_FREQ_CORRECT_ICRn = 8, // Phase/frequency-correct PWM, TOP = ICR1
+    TIMER_16BIT_WGM_PWM_PHASE_FREQ_CORRECT_OCRnA = 9, // Phase/frequency-correct PWM, TOP = OCR1A
+    TIMER_16BIT_WGM_PWM_PHASE_CORRECT_ICRn = 10,     // Phase-correct PWM, TOP = ICR1
+    TIMER_16BIT_WGM_PWM_PHASE_CORRECT_OCRnA = 11,    // Phase-correct PWM, TOP = OCR1A
+    TIMER_16BIT_WGM_CTC_ICRn = 12,                   // CTC mode, TOP = ICR1
+    TIMER_16BIT_WGM_RESERVED1 = 13,                  // Reserved / not used
+    TIMER_16BIT_WGM_FAST_PWM_ICRn = 14,               // Fast PWM, TOP = ICR1
+    TIMER_16BIT_WGM_FAST_PWM_OCRnA = 15              // Fast PWM, TOP = OCR1A
+} Timer_wgm_e;
+
+/**
+ * @brief enum defining the clock selection options
+ * 
+ */
+typedef enum Timer_clk_select_etag
+{
+    No_clock_source = 0,            // No clock source - Timer/counter stopped
+    clk_raw,                        // No prescaling - raw clock input. 
+    clk_div_8,                      // clock signal / 8
+    clk_div_64,                     // clock signal / 64
+    clk_div_256,                    // clock signal / 256
+    clk_div_1024,                   // clock signal / 1024
+    clk_external_T0_falling,        // external clock source on T0, count on falling edge
+    clk_external_T0_rising,         // external clock source on T0, count on rising edge
+}Timer_clk_select_e;
+
+/**
+ * @brief 
+ * 
+ */
+typedef enum Timer_compare_etag
+{
+    Normal_mode = 0,                // Normal mode 
+    Toggle_OC_on_compare_match,     // Toggle OCxA/B on compare match - 
+    Clear_OC_on_compare_match,      // Clear OCxA/B on compare match
+    Set_OC_on_compare_match         // Set OCxA/B on compare match
+
+}Timer_compare_e;
 
 typedef Timer_8bit_t    Timer_0_t;      // typedef for timer 0
 typedef Timer_16bit_t   Timer_1_t;      // typedef for timer 1
 typedef Timer_8bit_t    Timer_2_t;      // typedef for timer 2
 
-/**
- * @brief Enum defing the timer id's 
- * 
- */
-typedef enum
-{
-    Timer_0 = 0,
-    Timer_1 = 1,
-    Timer_2 = 2
-} timer_id_e;
-
 #define TIMER0_BASE_ADDRESS (0x44U) // base address for Timer 0
 #define TIMER1_BASE_ADDRESS (0x80U) // base address for Timer 1
 #define TIMER2_BASE_ADDRESS (0xB0U) // base address for Timer 2
+
+/**
+ * @brief enum defining the timer identity
+ * 
+ */
+typedef enum Timer_id_etag
+{
+    timer_0 = 0,
+    timer_1,
+    timer_2,
+}Timer_id_e;
 
 /**
  * @brief Define the 8-bit timer interrupt register
@@ -436,10 +462,6 @@ typedef union TISMK_16Bit_Ttag
     }b;
     uint8_t raw;
 }TISMK_16Bit_t;
-
-typedef TISMK_8Bit_t    Timer_irq_0_t;      // typedef for timer interrupt register 0
-typedef TISMK_16Bit_t   Timer_irq_1_t;      // typedef for timer interrupt register 1
-typedef TISMK_8Bit_t    Timer_irq_2_t;      // typedef for timer interrupt register 2
 
 #define TIMSK_0_BASE_ADDRESS (0x6EU)        // Timer/counter 0 interrupt register base address
 #define TIMSK_1_BASE_ADDRESS (0x6FU)        // Timer/counter 1 interrupt register base address
@@ -697,3 +719,15 @@ typedef union PPR_ttag
 }PPR_t;
 
 #define PPR_BASE_ADDRESS (0x64U)
+
+/*****************************************************************************/
+/* Oscillator Calibration Register                                           */
+/*****************************************************************************/
+
+/**
+ * @brief Define the OSCCAL register
+ * 
+ */
+typedef uint8_t OSCCAL_t;
+
+#define OSCCAL_BASE_ADDRESS (0x66U)
