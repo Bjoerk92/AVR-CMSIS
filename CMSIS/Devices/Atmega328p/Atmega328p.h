@@ -10,7 +10,7 @@
  */
 #pragma once
 
-#include "avr_compilor.h"
+#include "avr_compiler.h"
 
 /***
     \brief Base address offset
@@ -273,8 +273,7 @@ typedef struct
     {
         struct
         {
-            uint8_t WGMn0 : 1;      // Waveform Generation Mode bit 0
-            uint8_t WGMn1 : 1;      // Waveform Generation Mode bit 1
+            uint8_t WGM_LOW : 2;    // Wave generator low bits (0 and 1)
             uint8_t reserved : 2;   // Reserved - unused bits
             uint8_t COMnB : 2;      // Compare Output mode for Channel B
             uint8_t COMnA : 2;      // Compare Output Mode for Channel A
@@ -287,7 +286,7 @@ typedef struct
         struct
         {
             uint8_t Clk_scale : 3;  // Clock prescaler selection
-            uint8_t WGMn2 : 1;      // Waveform Generation Mode bit 2
+            uint8_t WGM_HIGH : 1;   // Waveform Generation Mode bit 2
             uint8_t reserved : 2;   // Reserved - unused bits
             uint8_t FOCnA : 1;      // Force Output Compare for Channel A
             uint8_t FOCnB : 1;      // Force Output Compare for Channel B
@@ -310,8 +309,7 @@ typedef struct
     {
         struct
         {
-            uint8_t WGMn0 : 1;      // Waveform Generation Mode bit 0
-            uint8_t WGMn1 : 1;      // Waveform Generation Mode bit 1
+            uint8_t WGM_LOW : 2;    // Wave generator low bit (0 / 1)
             uint8_t reserved : 2;   // Reserved - unused bits
             uint8_t COMnB : 2;      // Compare Output mode for Channel B
             uint8_t COMnA : 2;      // Compare Output Mode for Channel A
@@ -324,11 +322,9 @@ typedef struct
         struct
         {
             uint8_t Clk_scale : 3;  // Clock prescaler selection
-            uint8_t WGMn2 : 1;      // Waveform Generation Mode bit 2
-            uint8_t WGMn3 : 1;      // Waveform Generation Mode bit 2
+            uint8_t WGM_HIGH : 2;   // Wave generator high bit (2 / 3)
             uint8_t reserved : 1;   // Reserved - unused bits
-            uint8_t ICES1 : 1;      // Input Capture edge select
-            uint8_t ICNC1 : 1;      // Input Capture Noise Canceler
+            uint8_t ICE : 2;      // Input Capture option bits
         }bin;
         uint8_t raw;
     }tccrB_t;                      // Timer/Counter Control Register B
@@ -400,7 +396,7 @@ typedef enum Timer_clk_select_etag
 }Timer_clk_select_e;
 
 /**
- * @brief 
+ * @brief Enum defining the Timers compare options.
  * 
  */
 typedef enum Timer_compare_etag
@@ -409,16 +405,21 @@ typedef enum Timer_compare_etag
     Toggle_OC_on_compare_match,     // Toggle OCxA/B on compare match - 
     Clear_OC_on_compare_match,      // Clear OCxA/B on compare match
     Set_OC_on_compare_match         // Set OCxA/B on compare match
-
 }Timer_compare_e;
 
-typedef Timer_8bit_t    Timer_0_t;      // typedef for timer 0
-typedef Timer_16bit_t   Timer_1_t;      // typedef for timer 1
-typedef Timer_8bit_t    Timer_2_t;      // typedef for timer 2
+typedef enum Timer_Input_cap_opt_etag
+{
+    Falling_edge_No_noise_cancel = 0,
+    Rising_edge_no_noise_cancel = 1,
+    Falling_edge_with_noise_cancel = 2,
+    Rising_edge_with_noise_cancel = 3
+}Timer_Input_cap_opt_e;
 
-#define TIMER0_BASE_ADDRESS (0x44U) // base address for Timer 0
-#define TIMER1_BASE_ADDRESS (0x80U) // base address for Timer 1
-#define TIMER2_BASE_ADDRESS (0xB0U) // base address for Timer 2
+typedef enum Timer_cmp_channels_etag
+{
+    Channel_A = 0,
+    Channel_B
+}Timer_cmp_channels_e;
 
 /**
  * @brief enum defining the timer identity
@@ -431,41 +432,70 @@ typedef enum Timer_id_etag
     timer_2,
 }Timer_id_e;
 
+typedef Timer_8bit_t    Timer_0_t;  // typedef for timer 0
+typedef Timer_16bit_t   Timer_1_t;  // typedef for timer 1
+typedef Timer_8bit_t    Timer_2_t;  // typedef for timer 2
+
+#define MAX_TIMERS          (0x03U) // number of Timers
+#define TIMER_CMP_CHANNELS  (0x02U) // Number of Timer compare channels
+
+#define TIMER0_BASE_ADDRESS (0x44U) // base address for Timer 0
+#define TIMER1_BASE_ADDRESS (0x80U) // base address for Timer 1
+#define TIMER2_BASE_ADDRESS (0xB0U) // base address for Timer 2
+
+#define TIMER_BASE_ADDRESS {TIMER0_BASE_ADDRESS, TIMER1_BASE_ADDRESS, TIMER2_BASE_ADDRESS}
+
+/*****************************************************************************/
+/* Timer interrupt mask registers                                            */
+/*****************************************************************************/
+
 /**
  * @brief Define the 8-bit timer interrupt register
  * 
  */
-typedef union TISMK_8Bit_Ttag
+typedef union timsk_8bit_ttag
 {
     struct {
-        uint8_t TOIE : 1;
-        uint8_t OCIEA : 1;
-        uint8_t OCIEB : 1;
-        uint8_t reserved : 5;
+        uint8_t TOIE : 1;       // Timer overflow 
+        uint8_t OCIEA : 1;      // Output compare channel A
+        uint8_t OCIEB : 1;      // Output compare channel B
+        uint8_t reserved : 5;   // reserved
     }b;
     uint8_t raw;
-}TISMK_8Bit_t;
+}timsk_8bit_t;
 
 /**
  * @brief Define the 16-bit timer interrupt register
  * 
  */
-typedef union TISMK_16Bit_Ttag
+typedef union timsk_16Bit_ttag
 {
     struct {
-        uint8_t TOIE : 1;
-        uint8_t OCIEA : 1;
-        uint8_t OCIEB : 1;
-        uint8_t reserved : 2;
-        uint8_t ICIE : 1;
-        uint8_t reserved2: 2;
+        uint8_t TOIE : 1;       // Timer overflow
+        uint8_t OCIEA : 1;      // Output compare channel A
+        uint8_t OCIEB : 1;      // Output compare channel B
+        uint8_t reserved : 2;   // reserved
+        uint8_t ICIE : 1;       // Input capture 
+        uint8_t reserved2: 2;   // reserved
     }b;
     uint8_t raw;
-}TISMK_16Bit_t;
+}timsk_16bit_t;
+
+/**
+ * @brief Union holding the Timer interrupt mask registers
+ * 
+ */
+typedef union timsk_ttag{
+    timsk_8bit_t timer_8_bit;       // IRQ register defines for Timer 0/2
+    timsk_16bit_t timer_16_bit;     // IRQ register defines for Timer 1
+}timsk_t;
 
 #define TIMSK_0_BASE_ADDRESS (0x6EU)        // Timer/counter 0 interrupt register base address
 #define TIMSK_1_BASE_ADDRESS (0x6FU)        // Timer/counter 1 interrupt register base address
 #define TIMSK_2_BASE_ADDRESS (0x70U)        // Timer/counter 2 interrupt register base address
+
+#define TIMSK_BASE_ADDRESS {TIMSK_0_BASE_ADDRESS, TIMSK_1_BASE_ADDRESS, TIMSK_2_BASE_ADDRESS}
+
 
 /*****************************************************************************/
 /* SPI registers                                                             */

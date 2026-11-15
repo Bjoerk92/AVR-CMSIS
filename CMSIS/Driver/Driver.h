@@ -10,7 +10,7 @@
  */
 #pragma once
 
-#include "avr_compilor.h"
+#include "avr_compiler.h"
 #if 1
     #define ATMEGA328P 1
 #endif
@@ -26,6 +26,6 @@
 typedef enum drv_status_etag {
     DRV_OK = 0,
     DRV_ERROR,
-    DRV_ERROR_PARAM, 
+    DRV_ERROR_PARAM,
 }drv_status_e;
 
