@@ -11,6 +11,7 @@
 #pragma once
 
 #include "stdint.h"
+#include "stdbool.h"
 
 #if defined(__GNUC__)
     #include "avr_gcc.h"
