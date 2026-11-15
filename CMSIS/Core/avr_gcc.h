@@ -103,6 +103,12 @@
 #ifndef __STR
     #define __STR(x)                            #x
 #endif
+#ifndef __IRQ
+    #define __IRQ                               __attribute__((interrupt))
+#endif
+#ifndef __WEAK_IRQ                             
+    #define __WEAK_IRQ                          __attribute__((weak, interrupt))
+#endif
 
 /* ##########################  Core Instruction Access  ######################### */
 /** \defgroup CMSIS_Core_InstructionInterface CMSIS Core Instruction Interface

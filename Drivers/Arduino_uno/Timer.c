@@ -326,3 +326,27 @@ drv_status_e Timer_force_cmp(Timer_id_e timer_id, Timer_cmp_channels_e channel)
     }
     return status;
 }
+
+/*****************************************************************************/
+/* Timer IRQ functions                                                       */
+/*****************************************************************************/
+
+__WEAK_IRQ Timer0_IRQ_Overflow(void) {}
+
+__WEAK_IRQ Timer0_IRQ_CmpA(void) {}
+
+__WEAK_IRQ Timer0_IRQ_CmpB(void) {}
+
+__WEAK_IRQ Timer1_IRQ_Overflow(void) {}
+
+__WEAK_IRQ Timer1_IRQ_CmpA(void) {}
+
+__WEAK_IRQ Timer1_IRQ_CmpB(void) {}
+
+__WEAK_IRQ Timer1_IRQ_Input_capture(void) {}
+
+__WEAK_IRQ Timer2_IRQ_Overflow(void) {}
+
+__WEAK_IRQ Timer2_IRQ_CmpA(void) {}
+
+__WEAK_IRQ Timer2_IRQ_CmpB(void) {}
