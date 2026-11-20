@@ -574,7 +574,7 @@ typedef union ACRC_ttag
  * @brief Defines the Sleep mode control register
  * 
  */
-union SMCR_Utag
+typedef union SMCR_Utag
 {
     struct 
     {
@@ -609,7 +609,7 @@ typedef enum SLEEP_MODE_Etag
  * @brief Defines the Atmega328P MCU registers
  * 
  */
-struct MCUxR_Ttag
+typedef struct MCUxR_Ttag
 {
     union MCUSR_Utag
     {
@@ -650,7 +650,7 @@ struct MCUxR_Ttag
  * @brief Define the store program memory control register
  * 
  */
-union SPMCSR_Utag
+typedef union SPMCSR_Utag
 {
     struct
     {

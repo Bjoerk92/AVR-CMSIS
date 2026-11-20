@@ -27,7 +27,7 @@
 /*****************************************************************************/
 
 #define SP_BASE_ADDRESS (0x5DU)
-union SP_Utag
+typedef union SP_Utag
 {
     uint8_t SP_low;
     uint8_t SP_high;
@@ -40,7 +40,7 @@ union SP_Utag
 
 #define SREG_BASE_ADDRESS (0x5FU)
 
-union SREG_Utag
+typedef union SREG_Utag
 {
     struct 
     {

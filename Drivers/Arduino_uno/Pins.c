@@ -53,11 +53,31 @@ static const pin_mapping_t pin_map[] =
     {.group = PIN_C, .bit = 5}, // Pin number 19
 };
 
+/**
+ * @brief Max number of pins
+ * 
+ */
 static const uint8_t max_pin = sizeof(pin_map)/(sizeof(pin_map[0]));
 
+/**
+ * @brief pointer to the pinb hw block
+ * 
+ */
 static volatile pin_t* pin_b = (volatile pin_t*)PINB_BASE_ADDRESS;
+
+/**
+ * @brief pointer to the pinc hw block
+ * 
+ */
 static volatile pin_t* pin_c = (volatile pin_t*)PINC_BASE_ADDRESS;
+
+/**
+ * @brief pointer to the pind hw block
+ * 
+ */
 static volatile pin_t* pin_d = (volatile pin_t*)PIND_BASE_ADDRESS;
+
+
 
 /******************************************************************************/
 /*                  STATIC FUNCTIONS                                          */
@@ -131,7 +151,7 @@ __STATIC_INLINE void SetDirD(uint8_t pin, pin_dir_e dir)
 drv_status_e Pin_set_direction(uint8_t pin_number, pin_dir_e dir)
 {
     drv_status_e status = DRV_OK;
-    if (pin_number < max_pin)
+    if (pin_number >= max_pin)
     {
         status = DRV_ERROR_PARAM;
     }
@@ -163,7 +183,7 @@ drv_status_e Pin_set_direction(uint8_t pin_number, pin_dir_e dir)
 drv_status_e Pin_read(uint8_t pin_number, bool* dst)
 {
     drv_status_e status = DRV_OK;
-    if (pin_number < max_pin)
+    if (pin_number >= max_pin)
     {
         status = DRV_ERROR_PARAM;
     }
@@ -195,7 +215,7 @@ drv_status_e Pin_read(uint8_t pin_number, bool* dst)
 drv_status_e Pin_write(uint8_t pin_number, PIN_OUTPUT_E value)
 {
     drv_status_e status = DRV_OK;
-    if (pin_number < max_pin)
+    if (pin_number >= max_pin)
     {
         status = DRV_ERROR_PARAM;
     }
@@ -232,6 +252,38 @@ drv_status_e Pin_write(uint8_t pin_number, PIN_OUTPUT_E value)
                 {
                     pin_d->Data.raw &= ~(1 << pin_map[pin_number].bit);
                 }
+                break;
+            
+            default:
+                status = DRV_ERROR;
+                break;
+        }
+    }
+    return status;
+}
+
+/**
+ * @ref Pins.h
+ */
+drv_status_e Pin_Toggle(uint8_t pin_number)
+{
+    drv_status_e status = DRV_OK;
+    if (pin_number >= max_pin)
+    {
+        status = DRV_ERROR_PARAM;
+    }
+    else
+    {
+        switch (pin_map[pin_number].group)
+        {
+            case PIN_B:
+                pin_b->Data.raw ^= (1 << pin_map[pin_number].bit);
+                break;
+            case PIN_C:
+                pin_c->Data.raw ^= (1 << pin_map[pin_number].bit);
+                break; 
+            case PIN_D:
+                pin_d->Data.raw ^= (1 << pin_map[pin_number].bit);
                 break;
             
             default:

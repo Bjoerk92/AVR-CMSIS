@@ -12,6 +12,15 @@ if(TARGET_CHIP STREQUAL "Atmega328p")
     target_include_directories(CMSIS INTERFACE
         "${CMAKE_CURRENT_LIST_DIR}/Devices/Atmega328p"
     )
+
+    target_compile_options(CMSIS INTERFACE
+        "-mmcu=atmega328p"
+        "-DF_CPU=16000000UL"
+    )
+    target_link_options(CMSIS INTERFACE
+        "-mmcu=atmega328p"
+    )
+
 elseif(TARGET_CHIP STREQUAL "Atmega2560")
     target_include_directories(CMSIS INTERFACE
         "${CMAKE_CURRENT_LIST_DIR}/Devices/Atmega2560"

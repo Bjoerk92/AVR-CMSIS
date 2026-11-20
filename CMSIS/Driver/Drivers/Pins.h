@@ -67,3 +67,11 @@ drv_status_e Pin_read(uint8_t pin_number, bool* dst);
  * @return drv_status_e 
  */
 drv_status_e Pin_write(uint8_t pin_number, PIN_OUTPUT_E value);
+
+/**
+ * @brief Function to toggle a single pin value
+ * 
+ * @param pin_number    Pin number to toggle
+ * @return drv_status_e 
+ */
+drv_status_e Pin_Toggle(uint8_t pin_number);
