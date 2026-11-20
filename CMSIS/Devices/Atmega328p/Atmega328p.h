@@ -11,6 +11,7 @@
 #pragma once
 
 #include "avr_compiler.h"
+#include "avr_gcc.h"
 
 /***
     \brief Base address offset
@@ -439,10 +440,10 @@ typedef Timer_8bit_t    Timer_2_t;  // typedef for timer 2
 #define MAX_TIMERS          (0x03U) // number of Timers
 #define TIMER_CMP_CHANNELS  (0x02U) // Number of Timer compare channels
 
-#define TIMER0_BASE_ADDRESS (0x44U) // base address for Timer 0
-#define TIMER1_BASE_ADDRESS (0x80U) // base address for Timer 1
-#define TIMER2_BASE_ADDRESS (0xB0U) // base address for Timer 2
-
+#define TIMER0_BASE_ADDRESS ((void*)(0x44U)) // base address for Timer 0
+#define TIMER1_BASE_ADDRESS ((void*)(0x80U)) // base address for Timer 1
+#define TIMER2_BASE_ADDRESS ((void*)(0xB0U)) // base address for Timer 2
+                            
 #define TIMER_BASE_ADDRESS {TIMER0_BASE_ADDRESS, TIMER1_BASE_ADDRESS, TIMER2_BASE_ADDRESS}
 
 /*****************************************************************************/
@@ -490,9 +491,9 @@ typedef union timsk_ttag{
     timsk_16bit_t timer_16_bit;     // IRQ register defines for Timer 1
 }timsk_t;
 
-#define TIMSK_0_BASE_ADDRESS (0x6EU)        // Timer/counter 0 interrupt register base address
-#define TIMSK_1_BASE_ADDRESS (0x6FU)        // Timer/counter 1 interrupt register base address
-#define TIMSK_2_BASE_ADDRESS (0x70U)        // Timer/counter 2 interrupt register base address
+#define TIMSK_0_BASE_ADDRESS ((void*)(0x6EU))        // Timer/counter 0 interrupt register base address
+#define TIMSK_1_BASE_ADDRESS ((void*)(0x6FU))        // Timer/counter 1 interrupt register base address
+#define TIMSK_2_BASE_ADDRESS ((void*)(0x70U))        // Timer/counter 2 interrupt register base address
 
 #define TIMSK_BASE_ADDRESS {TIMSK_0_BASE_ADDRESS, TIMSK_1_BASE_ADDRESS, TIMSK_2_BASE_ADDRESS}
 

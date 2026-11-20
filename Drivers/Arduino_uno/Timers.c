@@ -9,18 +9,20 @@
  * 
  */
 #include "Timers.h"
+#include <stddef.h>
+
 
 /**
  * @brief Array of timer base address
  * 
  */
-static const void* timer_addresses[MAX_TIMERS] = TIMER_BASE_ADDRESS;
+static volatile void* timer_addresses[MAX_TIMERS] = TIMER_BASE_ADDRESS;
 
 /**
  * @brief Array of timer interrupt mask registers
  * 
  */
-static const void* timsk_addresses[MAX_TIMERS] = TIMSK_BASE_ADDRESS;
+static volatile void* timsk_addresses[MAX_TIMERS] = TIMSK_BASE_ADDRESS;
 
 /**
  * @brief Stored clock prescaler, used to start and stop the timer counter.
@@ -39,7 +41,7 @@ static Timer_clk_select_e saved_clk[MAX_TIMERS] = {};
  * @param config    pointer to its configuration
  * @return drv_status_e driver status
  */
-static drv_status_e init_8bit_timer(Timer_8bit_t* timer, ptr_Timer_cfg_t config)
+static drv_status_e init_8bit_timer(volatile Timer_8bit_t* timer, ptr_Timer_cfg_t config)
 {
     drv_status_e status = DRV_OK;
 
@@ -64,7 +66,7 @@ static drv_status_e init_8bit_timer(Timer_8bit_t* timer, ptr_Timer_cfg_t config)
  * @param config    pointer to its configuration
  * @return drv_status_e driver status
  */
-static drv_status_e init_16bit_timer(Timer_8bit_t* timer, ptr_Timer_cfg_t config)
+static drv_status_e init_16bit_timer(volatile Timer_16bit_t* timer, ptr_Timer_cfg_t config)
 {
     drv_status_e status = DRV_OK;
 
@@ -105,8 +107,8 @@ drv_status_e Timer_Init(ptr_Timer_cfg_t config)
             case timer_0:   // allow fall thought. 
             case timer_2:
             {
-                Timer_8bit_t* timer = (Timer_8bit_t*)&timer_addresses[config->timer_id];
-                timsk_8bit_t* timsk = (timsk_8bit_t*)&timsk_addresses[config->timer_id];
+                volatile Timer_8bit_t* timer = (volatile Timer_8bit_t*)timer_addresses[config->timer_id];
+                volatile timsk_8bit_t* timsk = (volatile timsk_8bit_t*)timsk_addresses[config->timer_id];
                 // enable the IRQ before stating the timers
                 if (config->IRQ_bit_en.timer_8_bit.raw != 0)
                 {   
@@ -119,8 +121,8 @@ drv_status_e Timer_Init(ptr_Timer_cfg_t config)
             // 16-bit timers.
             case timer_1:
             {
-                Timer_16bit_t* timer = (Timer_16bit_t*)&timer_addresses[config->timer_id];
-                timsk_16bit_t* timsk = (timsk_16bit_t*)&timsk_addresses[config->timer_id];
+                volatile Timer_16bit_t* timer = (volatile Timer_16bit_t*)timer_addresses[config->timer_id];
+                volatile timsk_16bit_t* timsk = (volatile timsk_16bit_t*)timsk_addresses[config->timer_id];
                 
                 // enable the IRQ before stating the timers
                 if (config->IRQ_bit_en.timer_16_bit.raw != 0)
@@ -153,7 +155,7 @@ drv_status_e Timer_stop(Timer_id_e timer_id)
         case timer_0:   // allow fall thought. 
         case timer_2:
         {
-            Timer_8bit_t* timer = (Timer_8bit_t*)&timer_addresses[timer_id];
+            volatile Timer_8bit_t* timer = (volatile Timer_8bit_t*)timer_addresses[timer_id];
             saved_clk[timer_id] = timer->tccrB_t.bin.Clk_scale;
             timer->tccrB_t.bin.Clk_scale = No_clock_source; // no clock source -> Timer stopped.
             break;
@@ -162,7 +164,7 @@ drv_status_e Timer_stop(Timer_id_e timer_id)
         // 16-bit timers.
         case timer_1:
         {
-            Timer_16bit_t* timer = (Timer_16bit_t*)&timer_addresses[timer_id];
+            volatile Timer_16bit_t* timer = (volatile Timer_16bit_t*)timer_addresses[timer_id];
             saved_clk[timer_id] = timer->tccrB_t.bin.Clk_scale;
             timer->tccrB_t.bin.Clk_scale = No_clock_source; // no clock source -> Timer stopped.
             break;
@@ -189,7 +191,7 @@ drv_status_e Timer_Restart(Timer_id_e timer_id)
         case timer_0:   // allow fall thought. 
         case timer_2:
         {
-            Timer_8bit_t* timer = (Timer_8bit_t*)&timer_addresses[timer_id];
+            volatile Timer_8bit_t* timer = (volatile Timer_8bit_t*)timer_addresses[timer_id];
             timer->tccrB_t.bin.Clk_scale = saved_clk[timer_id];
             break;
         }
@@ -197,7 +199,7 @@ drv_status_e Timer_Restart(Timer_id_e timer_id)
         // 16-bit timers.
         case timer_1:
         {
-            Timer_16bit_t* timer = (Timer_16bit_t*)&timer_addresses[timer_id];
+            volatile Timer_16bit_t* timer = (volatile Timer_16bit_t*)timer_addresses[timer_id];
             timer->tccrB_t.bin.Clk_scale = saved_clk[timer_id];
             break;
         }
@@ -223,7 +225,7 @@ drv_status_e Timer_clear_cnt(Timer_id_e timer_id)
         case timer_0:   // allow fall thought. 
         case timer_2:
         {
-            Timer_8bit_t* timer = (Timer_8bit_t*)&timer_addresses[timer_id];
+            volatile Timer_8bit_t* timer = (volatile Timer_8bit_t*)timer_addresses[timer_id];
             timer->TCNTn = 0;
             break;
         }
@@ -231,7 +233,7 @@ drv_status_e Timer_clear_cnt(Timer_id_e timer_id)
         // 16-bit timers.
         case timer_1:
         {
-            Timer_16bit_t* timer = (Timer_16bit_t*)&timer_addresses[timer_id];
+            volatile Timer_16bit_t* timer = (volatile Timer_16bit_t*)timer_addresses[timer_id];
             timer->TCNTn = 0;
             break;
         }
@@ -257,7 +259,7 @@ drv_status_e Timer_get_cnt(Timer_id_e timer_id, uint16_t* dst)
         case timer_0:   // allow fall thought. 
         case timer_2:
         {
-            Timer_8bit_t* timer = (Timer_8bit_t*)&timer_addresses[timer_id];
+            volatile Timer_8bit_t* timer = (volatile Timer_8bit_t*)timer_addresses[timer_id];
             *dst = timer->TCNTn;
             break;
         }
@@ -265,7 +267,7 @@ drv_status_e Timer_get_cnt(Timer_id_e timer_id, uint16_t* dst)
         // 16-bit timers.
         case timer_1:
         {
-            Timer_16bit_t* timer = (Timer_16bit_t*)&timer_addresses[timer_id];
+            volatile Timer_16bit_t* timer = (volatile Timer_16bit_t*)timer_addresses[timer_id];
             *dst = timer->TCNTn;
             break;
         }
@@ -291,7 +293,7 @@ drv_status_e Timer_force_cmp(Timer_id_e timer_id, Timer_cmp_channels_e channel)
         case timer_0:   // allow fall thought. 
         case timer_2:
         {
-            Timer_8bit_t* timer = (Timer_8bit_t*)&timer_addresses[timer_id];
+            volatile Timer_8bit_t* timer = (volatile Timer_8bit_t*)timer_addresses[timer_id];
             if (channel == Channel_A)
             {
                 timer->tccrB_t.bin.FOCnA = 0x01U;
@@ -306,7 +308,7 @@ drv_status_e Timer_force_cmp(Timer_id_e timer_id, Timer_cmp_channels_e channel)
         // 16-bit timers.
         case timer_1:
         {
-            Timer_16bit_t* timer = (Timer_16bit_t*)&timer_addresses[timer_id];
+            volatile Timer_16bit_t* timer = (volatile Timer_16bit_t*)timer_addresses[timer_id];
             if (channel == Channel_A)
             {
                 timer->tccrC_t.bin.FOCnA = 0x01U;
@@ -331,22 +333,13 @@ drv_status_e Timer_force_cmp(Timer_id_e timer_id, Timer_cmp_channels_e channel)
 /* Timer IRQ functions                                                       */
 /*****************************************************************************/
 
-__WEAK_IRQ Timer0_IRQ_Overflow(void) {}
-
-__WEAK_IRQ Timer0_IRQ_CmpA(void) {}
-
-__WEAK_IRQ Timer0_IRQ_CmpB(void) {}
-
-__WEAK_IRQ Timer1_IRQ_Overflow(void) {}
-
-__WEAK_IRQ Timer1_IRQ_CmpA(void) {}
-
-__WEAK_IRQ Timer1_IRQ_CmpB(void) {}
-
-__WEAK_IRQ Timer1_IRQ_Input_capture(void) {}
-
-__WEAK_IRQ Timer2_IRQ_Overflow(void) {}
-
-__WEAK_IRQ Timer2_IRQ_CmpA(void) {}
-
-__WEAK_IRQ Timer2_IRQ_CmpB(void) {}
+__WEAK void Timer0_IRQ_Overflow(void) {}
+__WEAK void Timer0_IRQ_CmpA(void) {}
+__WEAK void Timer0_IRQ_CmpB(void) {}
+__WEAK void Timer1_IRQ_Overflow(void) {}
+__WEAK void Timer1_IRQ_CmpA(void) {}
+__WEAK void Timer1_IRQ_CmpB(void) {}
+__WEAK void Timer1_IRQ_Input_capture(void) {}
+__WEAK void Timer2_IRQ_Overflow(void) {}
+__WEAK void Timer2_IRQ_CmpA(void) {}
+__WEAK void Timer2_IRQ_CmpB(void) {}

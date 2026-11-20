@@ -11,6 +11,7 @@
 #pragma once
 
 #include "avr_compiler.h"
+#include "avr_gcc.h"
 #if 1
     #define ATMEGA328P 1
 #endif

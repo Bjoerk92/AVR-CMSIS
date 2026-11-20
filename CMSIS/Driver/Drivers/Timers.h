@@ -12,7 +12,6 @@
 
 #include "Driver.h"
 
-
 /**
  * @brief Timer size found in AVR Atmega chips
  * 
@@ -98,4 +97,15 @@ drv_status_e Timer_get_cnt(Timer_id_e timer_id, uint16_t* dst);
  * @return drv_status_e 
  */
 drv_status_e Timer_force_cmp(Timer_id_e timer_id, Timer_cmp_channels_e channel);
+
+void Timer0_IRQ_Overflow(void);
+void Timer0_IRQ_CmpA(void);
+void Timer0_IRQ_CmpB(void);
+void Timer1_IRQ_Overflow(void);
+void Timer1_IRQ_CmpA(void);
+void Timer1_IRQ_CmpB(void);
+void Timer1_IRQ_Input_capture(void);
+void Timer2_IRQ_Overflow(void);
+void Timer2_IRQ_CmpA(void);
+void Timer2_IRQ_CmpB(void);
 

@@ -16,14 +16,14 @@
  */
 #define LED_BUILDIN     ((uint8_t)13)
 
-static uint8_t counter = 0;
+static volatile uint8_t counter = 0;
 
 static void setupTimer()
 {
     Timer_cfg_t timer_cfg = {
         .timer_id               = timer_0,
         .Wave                   = TIMER_8BIT_WGM_NORMAL,
-        .prescaler              = clk_div_8,
+        .prescaler              = clk_div_1024,
         .cmp_mode[Channel_A]    = Normal_mode,
         .cmp_mode[Channel_B]    = Normal_mode,
         .cmp_value[Channel_A]   = 0,
@@ -38,18 +38,21 @@ static void setupTimer()
 int main(void)
 {
     Pin_set_direction(LED_BUILDIN, PIN_DIR_OUTPUT);
-
     setupTimer();
-
-
-
+    __enable_IRQ();
     Pin_write(LED_BUILDIN, PIN_HIGH);
     while(1)
     {
     }
 }
 
-__IRQ void Timer0_IRQ_Overflow(void)
+void Timer0_IRQ_Overflow(void)
 {
     counter++;
+
+    if (counter == UINT8_MAX)
+    {
+        Pin_Toggle(LED_BUILDIN);
+        counter = 0;
+    }
 }
